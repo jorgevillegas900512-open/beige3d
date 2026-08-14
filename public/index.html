@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogo 3D - Impresiones</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Catalogo 3D</h1>
+      <p>Impresiones 3D de calidad profesional</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="buscador">
+      <input type="text" id="buscarInput" placeholder="Buscar producto..." />
+      <select id="filtroCategoria">
+        <option value="">Todas las categorias</option>
+      </select>
+    </section>
+
+    <section class="filtro-alfabeto" id="filtroAlfabeto"></section>
+
+    <section id="resultados-info" class="resultados-info"></section>
+
+    <section id="catalogo" class="catalogo">
+      <div class="loading">Cargando productos...</div>
+    </section>
+
+    <section id="paginacion" class="paginacion"></section>
+  </main>
+
+  <div id="modal" class="modal" style="display:none">
+    <div class="modal-content">
+      <span class="modal-close" onclick="cerrarModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Catalogo de impresion 3D &copy; 2026</p>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

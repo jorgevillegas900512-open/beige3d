@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Catalogo 3D</title>
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+  <div id="login-screen">
+    <div class="login-box">
+      <h1>Admin 3D</h1>
+      <p>Inicia sesion para gestionar el catalogo</p>
+      <form id="login-form">
+        <input type="text" id="login-usuario" placeholder="Usuario" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit">Ingresar</button>
+      </form>
+      <p class="register-link">No tienes cuenta? <a href="#" onclick="mostrarRegistro()">Crear cuenta</a></p>
+      <div id="register-form" style="display:none">
+        <input type="text" id="reg-usuario" placeholder="Nuevo usuario" />
+        <input type="password" id="reg-password" placeholder="Nuevo password" />
+        <button onclick="registrar()">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="admin-panel" style="display:none">
+    <nav class="admin-nav">
+      <div class="nav-left">
+        <h2>Admin 3D</h2>
+      </div>
+      <div class="nav-right">
+        <span id="admin-user"></span>
+        <button onclick="logout()" class="btn-logout">Salir</button>
+      </div>
+    </nav>
+
+    <div class="admin-content">
+      <aside class="admin-sidebar">
+        <button class="nav-btn active" data-section="catalogo" onclick="showSection('catalogo')">
+          Catalogo
+        </button>
+        <button class="nav-btn" data-section="importar" onclick="showSection('importar')">
+          Importar de MakerWorld
+        </button>
+        <button class="nav-btn" data-section="pedidos" onclick="showSection('pedidos')">
+          Pedidos
+        </button>
+      </aside>
+
+      <main class="admin-main">
+        <section id="section-catalogo" class="admin-section active">
+          <div class="section-header">
+            <h3>Gestionar Catalogo</h3>
+            <input type="text" id="admin-buscar" placeholder="Buscar producto..." oninput="adminBuscar()" />
+          </div>
+          <div id="admin-productos" class="admin-grid"></div>
+          <div id="admin-paginacion" class="paginacion"></div>
+        </section>
+
+        <section id="section-importar" class="admin-section">
+          <h3>Importar productos de MakerWorld</h3>
+          <p style="color:#666; margin-bottom:15px;">Pega las URLs de los productos de MakerWorld. Puedes poner varias, una por linea.</p>
+          <div class="import-form" style="flex-direction:column;">
+            <textarea id="import-urls" rows="6" placeholder="https://makerworld.com/en/models/2316580-spring-swing-couple-silhouette&#10;https://makerworld.com/en/models/2280071-leopard-2-a7-main-battle-tank&#10;..." style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
+            <button onclick="importarProductos()" class="btn-primary" style="align-self:flex-start;">Importar productos</button>
+          </div>
+          <div id="import-status"></div>
+        </section>
+
+        <section id="section-pedidos" class="admin-section">
+          <h3>Pedidos</h3>
+          <div class="pedidos-filtros">
+            <select id="filtro-estado" onchange="cargarPedidos()">
+              <option value="">Todos</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="en_proceso">En proceso</option>
+              <option value="completado">Completado</option>
+              <option value="entregado">Entregado</option>
+            </select>
+          </div>
+          <div id="admin-pedidos"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="producto-modal" class="modal" style="display:none">
+    <div class="modal-content modal-large">
+      <span class="modal-close" onclick="cerrarProductoModal()">&times;</span>
+      <div id="producto-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="/admin/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "impresion3d-catalogo",
+  "version": "1.0.0",
+  "description": "Catalogo de productos de impresion 3D con datos de MakerWorld",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "scrape": "node src/scraper.js",
+    "dev": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
