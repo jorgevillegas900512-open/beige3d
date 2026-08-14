@@ -38,41 +38,6 @@ async function login() {
   }
 }
 
-function mostrarRegistro() {
-  document.getElementById('register-form').style.display = 'block';
-}
-
-async function registrar() {
-  const usuario = document.getElementById('reg-usuario').value;
-  const password = document.getElementById('reg-password').value;
-
-  if (!usuario || !password) {
-    alert('Completa todos los campos');
-    return;
-  }
-
-  try {
-    const res = await fetch('/api/admin/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usuario, password })
-    });
-
-    const data = await res.json();
-
-    if (data.token) {
-      token = data.token;
-      localStorage.setItem('admin_token', token);
-      document.getElementById('admin-user').textContent = data.usuario;
-      mostrarPanel();
-    } else {
-      alert(data.error || 'Error al registrar');
-    }
-  } catch (error) {
-    alert('Error de conexion');
-  }
-}
-
 function mostrarPanel() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('admin-panel').style.display = 'block';
@@ -94,6 +59,7 @@ function showSection(section) {
   document.querySelector(`.nav-btn[data-section="${section}"]`).classList.add('active');
 
   if (section === 'pedidos') cargarPedidos();
+  if (section === 'usuarios') cargarUsuarios();
 }
 
 let adminBuscarTimer;
@@ -384,5 +350,78 @@ async function cambiarEstado(id, estado) {
     if (res.ok) cargarPedidos();
   } catch (error) {
     alert('Error actualizando pedido');
+  }
+}
+
+async function cargarUsuarios() {
+  const container = document.getElementById('admin-usuarios');
+  try {
+    const res = await fetch('/api/admin/usuarios', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.status === 401) { logout(); return; }
+    const usuarios = await res.json();
+
+    container.innerHTML = '<div class="usuarios-list">' + usuarios.map(u => `
+      <div class="usuario-card">
+        <span>${u.usuario}</span>
+        <small>${u.created_at ? new Date(u.created_at).toLocaleDateString('es') : ''}</small>
+        ${usuarios.length > 1 ? `<button onclick="eliminarUsuario(${u.id})" class="btn-delete">Eliminar</button>` : '<small style="color:#888">(admin principal)</small>'}
+      </div>
+    `).join('') + '</div>';
+  } catch (error) {
+    container.innerHTML = '<p>Error cargando usuarios</p>';
+  }
+}
+
+async function crearUsuario() {
+  const usuario = document.getElementById('nuevo-usuario').value;
+  const password = document.getElementById('nuevo-password').value;
+
+  if (!usuario || !password) {
+    alert('Completa todos los campos');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin/usuarios', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ usuario, password })
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('nuevo-usuario').value = '';
+      document.getElementById('nuevo-password').value = '';
+      cargarUsuarios();
+    } else {
+      alert(data.error || 'Error al crear usuario');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+async function eliminarUsuario(id) {
+  if (!confirm('Eliminar este usuario?')) return;
+
+  try {
+    const res = await fetch(`/api/admin/usuarios/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      cargarUsuarios();
+    } else {
+      alert(data.error || 'Error al eliminar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
   }
 }

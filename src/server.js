@@ -42,7 +42,7 @@ app.post('/api/admin/login', (req, res) => {
   res.json({ token, usuario: admin.usuario });
 });
 
-app.post('/api/admin/register', (req, res) => {
+app.post('/api/admin/usuarios', authMiddleware, (req, res) => {
   const { usuario, password } = req.body;
   if (!usuario || !password) return res.status(400).json({ error: 'Usuario y password requeridos' });
 
@@ -61,8 +61,29 @@ app.post('/api/admin/register', (req, res) => {
   db.admins.push(admin);
   writeDb(db);
 
-  const token = jwt.sign({ id: admin.id, usuario }, JWT_SECRET, { expiresIn: '24h' });
-  res.json({ token, usuario });
+  res.json({ success: true, usuario: admin.usuario, id: admin.id });
+});
+
+app.get('/api/admin/usuarios', authMiddleware, (req, res) => {
+  const db = readDb();
+  const usuarios = db.admins.map(a => ({
+    id: a.id,
+    usuario: a.usuario,
+    created_at: a.created_at
+  }));
+  res.json(usuarios);
+});
+
+app.delete('/api/admin/usuarios/:id', authMiddleware, (req, res) => {
+  const db = readDb();
+  const id = parseInt(req.params.id);
+  const admin = db.admins.find(a => a.id === id);
+  if (!admin) return res.status(404).json({ error: 'Usuario no encontrado' });
+  if (db.admins.length <= 1) return res.status(400).json({ error: 'No puedes eliminar el ultimo administrador' });
+
+  db.admins = db.admins.filter(a => a.id !== id);
+  writeDb(db);
+  res.json({ success: true });
 });
 
 // === PRODUCTOS PUBLICOS ===

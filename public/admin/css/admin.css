@@ -341,10 +341,32 @@ body {
 .paginacion button:hover { background: #1a1a2e; color: white; }
 .paginacion button.active { background: #1a1a2e; color: white; }
 
+.usuario-form {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.usuario-form input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+.usuario-form input[type="text"] { width: 200px; }
+.usuario-form input[type="password"] { width: 200px; }
+
+.usuarios-list { display: flex; flex-direction: column; gap: 8px; }
+.usuario-card {
+  display: flex; align-items: center; gap: 15px; padding: 12px 16px;
+  background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;
+}
+.usuario-card span { font-weight: 600; min-width: 120px; }
+.usuario-card small { color: #888; }
+.btn-delete {
+  margin-left: auto; padding: 6px 12px; background: #e74c3c; color: white;
+  border: none; border-radius: 4px; cursor: pointer; font-size: 12px;
+}
+.btn-delete:hover { background: #c0392b; }
+
 @media (max-width: 768px) {
   .admin-content { flex-direction: column; }
   .admin-sidebar { width: 100%; display: flex; overflow-x: auto; padding: 0; }
   .nav-btn { white-space: nowrap; }
   .admin-grid { grid-template-columns: 1fr; }
   .modal-detail-grid { grid-template-columns: 1fr; }
+  .usuario-form { flex-direction: column; }
+  .usuario-form input { width: 100%; }
 }

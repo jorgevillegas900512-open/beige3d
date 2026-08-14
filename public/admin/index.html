@@ -16,12 +16,6 @@
         <input type="password" id="login-password" placeholder="Password" required />
         <button type="submit">Ingresar</button>
       </form>
-      <p class="register-link">No tienes cuenta? <a href="#" onclick="mostrarRegistro()">Crear cuenta</a></p>
-      <div id="register-form" style="display:none">
-        <input type="text" id="reg-usuario" placeholder="Nuevo usuario" />
-        <input type="password" id="reg-password" placeholder="Nuevo password" />
-        <button onclick="registrar()">Crear cuenta</button>
-      </div>
     </div>
   </div>
 
@@ -46,6 +40,9 @@
         </button>
         <button class="nav-btn" data-section="pedidos" onclick="showSection('pedidos')">
           Pedidos
+        </button>
+        <button class="nav-btn" data-section="usuarios" onclick="showSection('usuarios')">
+          Usuarios
         </button>
       </aside>
 
@@ -81,6 +78,16 @@
             </select>
           </div>
           <div id="admin-pedidos"></div>
+        </section>
+
+        <section id="section-usuarios" class="admin-section">
+          <h3>Gestionar Usuarios</h3>
+          <div class="usuario-form">
+            <input type="text" id="nuevo-usuario" placeholder="Nuevo usuario" />
+            <input type="password" id="nuevo-password" placeholder="Password" />
+            <button onclick="crearUsuario()" class="btn-primary">Crear usuario</button>
+          </div>
+          <div id="admin-usuarios"></div>
         </section>
       </main>
     </div>
