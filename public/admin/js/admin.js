@@ -293,6 +293,7 @@ async function importarProductos() {
 
 async function cargarPedidos() {
   const estado = document.getElementById('filtro-estado').value;
+  const buscar = (document.getElementById('buscar-pedido')?.value || '').toLowerCase();
   const container = document.getElementById('admin-pedidos');
 
   try {
@@ -303,7 +304,15 @@ async function cargarPedidos() {
 
     if (res.status === 401) { logout(); return; }
 
-    const pedidos = await res.json();
+    let pedidos = await res.json();
+
+    if (buscar) {
+      pedidos = pedidos.filter(p =>
+        (p.cliente_nombre || '').toLowerCase().includes(buscar) ||
+        (p.cliente_email || '').toLowerCase().includes(buscar) ||
+        (p.cliente_telefono || '').toLowerCase().includes(buscar)
+      );
+    }
 
     if (pedidos.length === 0) {
       container.innerHTML = '<p style="color:#888; padding:20px;">No hay pedidos</p>';
@@ -523,7 +532,34 @@ async function cargarInsumos() {
     const res = await fetch('/api/admin/insumos', { headers: { Authorization: `Bearer ${token}` } });
     if (res.status === 401) { logout(); return; }
     const items = await res.json();
-    renderCrud('admin-insumos', items, [
+
+    // poblar filtro de categorias
+    const sel = document.getElementById('filtro-categoria-insumo');
+    if (sel && sel.dataset.pob === undefined) {
+      const cats = [...new Set(items.map(i => i.categoria).filter(Boolean))].sort();
+      cats.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c; opt.textContent = c;
+        sel.appendChild(opt);
+      });
+      sel.dataset.pob = '1';
+    }
+
+    const buscar = (document.getElementById('buscar-insumo')?.value || '').toLowerCase();
+    const catFiltro = document.getElementById('filtro-categoria-insumo')?.value || '';
+    const soloBajo = document.getElementById('filtro-stock-bajo')?.checked;
+
+    const filtrados = items.filter(i => {
+      const matchBuscar = !buscar ||
+        (i.nombre || '').toLowerCase().includes(buscar) ||
+        (i.categoria || '').toLowerCase().includes(buscar) ||
+        (i.proveedor || '').toLowerCase().includes(buscar);
+      const matchCat = !catFiltro || i.categoria === catFiltro;
+      const matchBajo = !soloBajo || (parseFloat(i.cantidad) <= parseFloat(i.stock_minimo || 0));
+      return matchBuscar && matchCat && matchBajo;
+    });
+
+    renderCrud('admin-insumos', filtrados, [
       { key: 'nombre', label: 'Nombre' },
       { key: 'categoria', label: 'Categoria' },
       { key: 'cantidad', label: 'Cantidad' },
@@ -574,7 +610,17 @@ async function cargarProveedores() {
     const res = await fetch('/api/admin/proveedores', { headers: { Authorization: `Bearer ${token}` } });
     if (res.status === 401) { logout(); return; }
     const items = await res.json();
-    renderCrud('admin-proveedores', items, [
+
+    const buscar = (document.getElementById('buscar-proveedor')?.value || '').toLowerCase();
+    const filtrados = items.filter(p =>
+      !buscar ||
+      (p.empresa || '').toLowerCase().includes(buscar) ||
+      (p.contacto || '').toLowerCase().includes(buscar) ||
+      (p.email || '').toLowerCase().includes(buscar) ||
+      (p.telefono || '').toLowerCase().includes(buscar)
+    );
+
+    renderCrud('admin-proveedores', filtrados, [
       { key: 'empresa', label: 'Empresa' },
       { key: 'contacto', label: 'Contacto' },
       { key: 'telefono', label: 'Telefono' },
@@ -623,7 +669,16 @@ async function cargarClientes() {
     const res = await fetch('/api/admin/clientes', { headers: { Authorization: `Bearer ${token}` } });
     if (res.status === 401) { logout(); return; }
     const items = await res.json();
-    renderCrud('admin-clientes', items, [
+
+    const buscar = (document.getElementById('buscar-cliente')?.value || '').toLowerCase();
+    const filtrados = items.filter(c =>
+      !buscar ||
+      (c.nombre || '').toLowerCase().includes(buscar) ||
+      (c.email || '').toLowerCase().includes(buscar) ||
+      (c.telefono || '').toLowerCase().includes(buscar)
+    );
+
+    renderCrud('admin-clientes', filtrados, [
       { key: 'nombre', label: 'Nombre' },
       { key: 'telefono', label: 'Telefono' },
       { key: 'email', label: 'Email' },

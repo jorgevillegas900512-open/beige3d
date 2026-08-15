@@ -97,6 +97,7 @@
             <button onclick="crearPedido()" class="btn-primary">Guardar Pedido</button>
           </div>
           <div class="pedidos-filtros">
+            <input type="text" id="buscar-pedido" placeholder="Buscar cliente..." oninput="cargarPedidos()" />
             <select id="filtro-estado" onchange="cargarPedidos()">
               <option value="">Todos</option>
               <option value="pendiente">Pendiente</option>
@@ -123,22 +124,23 @@
             <textarea id="i-notas" placeholder="Notas" rows="2"></textarea>
             <button onclick="guardarInsumo()" class="btn-primary">Guardar Insumo</button>
           </div>
+          <div class="pedidos-filtros">
+            <input type="text" id="buscar-insumo" placeholder="Buscar insumo..." oninput="cargarInsumos()" />
+            <select id="filtro-categoria-insumo" onchange="cargarInsumos()">
+              <option value="">Todas las categorias</option>
+            </select>
+            <label style="display:flex; align-items:center; gap:5px; font-size:0.85rem; color:#666; white-space:nowrap;">
+              <input type="checkbox" id="filtro-stock-bajo" onchange="cargarInsumos()" /> Solo stock bajo
+            </label>
+          </div>
           <div id="admin-insumos"></div>
         </section>
 
         <section id="section-proveedores" class="admin-section">
           <h3>Agenda de Proveedores</h3>
           <button class="btn-primary" onclick="toggleForm('proveedor')" style="margin-bottom:15px;">+ Nuevo Proveedor</button>
-          <div id="form-proveedor" class="crud-form" style="display:none">
-            <div class="form-grid">
-              <input type="text" id="pr-empresa" placeholder="Empresa *" />
-              <input type="text" id="pr-contacto" placeholder="Persona de contacto" />
-              <input type="text" id="pr-telefono" placeholder="Telefono" />
-              <input type="email" id="pr-email" placeholder="Email" />
-              <input type="text" id="pr-direccion" placeholder="Direccion" />
-            </div>
-            <textarea id="pr-notas" placeholder="Notas" rows="2"></textarea>
-            <button onclick="guardarProveedor()" class="btn-primary">Guardar Proveedor</button>
+          <div class="pedidos-filtros">
+            <input type="text" id="buscar-proveedor" placeholder="Buscar empresa, contacto o email..." oninput="cargarProveedores()" />
           </div>
           <div id="admin-proveedores"></div>
         </section>
@@ -146,15 +148,8 @@
         <section id="section-clientes" class="admin-section">
           <h3>Agenda de Clientes</h3>
           <button class="btn-primary" onclick="toggleForm('cliente')" style="margin-bottom:15px;">+ Nuevo Cliente</button>
-          <div id="form-cliente" class="crud-form" style="display:none">
-            <div class="form-grid">
-              <input type="text" id="c-nombre" placeholder="Nombre *" />
-              <input type="text" id="c-telefono" placeholder="Telefono" />
-              <input type="email" id="c-email" placeholder="Email" />
-              <input type="text" id="c-direccion" placeholder="Direccion" />
-            </div>
-            <textarea id="c-notas" placeholder="Notas (pedidos previos, preferencias...)" rows="2"></textarea>
-            <button onclick="guardarCliente()" class="btn-primary">Guardar Cliente</button>
+          <div class="pedidos-filtros">
+            <input type="text" id="buscar-cliente" placeholder="Buscar nombre, email o telefono..." oninput="cargarClientes()" />
           </div>
           <div id="admin-clientes"></div>
         </section>
