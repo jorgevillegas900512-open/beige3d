@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>beige-3d — Impresion 3D y Fabricacion Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #0b0e1a;
+      --bg-1: #111627;
+      --glass: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --teal: #2dd4bf;
+      --cyan: #22d3ee;
+      --magenta: #e879f9;
+      --pink: #f472b6;
+      --orange: #fb923c;
+      --gold: #fcd34d;
+      --violet: #a78bfa;
+      --lavender: #c4b5fd;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg-0);
+      color: #fff;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== STAGE / BACKGROUND ===== */
+    .stage {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(120% 80% at 20% 10%, rgba(34, 211, 238, 0.10), transparent 50%),
+        radial-gradient(120% 80% at 85% 90%, rgba(232, 121, 249, 0.10), transparent 50%),
+        radial-gradient(140% 100% at 50% 50%, rgba(45, 212, 191, 0.05), transparent 60%),
+        linear-gradient(160deg, #0c1020 0%, #0b0e1a 45%, #0a0d18 100%);
+      overflow: hidden;
+    }
+
+    /* subtle polygonal grid */
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+      transform: perspective(600px) rotateX(60deg) scale(1.4);
+      transform-origin: center 30%;
+      mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 70%);
+      -webkit-mask-image: radial-gradient(circle at 50% 40%, #000 0%, transparent 70%);
+    }
+
+    /* light leaks */
+    .leak {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .leak.a { width: 420px; height: 420px; background: var(--cyan); top: -120px; left: -80px; }
+    .leak.b { width: 380px; height: 380px; background: var(--magenta); bottom: -120px; right: -60px; }
+    .leak.c { width: 300px; height: 300px; background: var(--teal); top: 40%; left: 60%; opacity: 0.35; }
+
+    /* floating frosted orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      pointer-events: none;
+    }
+    .orb.o1 { width: 220px; height: 220px; top: 12%; left: 8%; }
+    .orb.o2 { width: 140px; height: 140px; bottom: 18%; left: 18%; }
+    .orb.o3 { width: 180px; height: 180px; top: 20%; right: 10%; }
+
+    /* ===== FLOATING LOW-POLY SHAPES ===== */
+    .shape { position: absolute; pointer-events: none; will-change: transform; }
+    .shape svg { display: block; filter: drop-shadow(0 10px 24px rgba(0,0,0,0.45)); }
+
+    .s-cube    { top: 18%; left: 14%;  animation: float1 9s ease-in-out infinite; }
+    .s-diamond { top: 26%; right: 16%; animation: float2 11s ease-in-out infinite; }
+    .s-prism   { bottom: 22%; left: 20%; animation: float3 10s ease-in-out infinite; }
+    .s-tetra   { bottom: 28%; right: 22%; animation: float1 12s ease-in-out infinite; }
+    .s-ring    { top: 50%; left: 6%;  animation: float2 13s ease-in-out infinite; }
+    .s-small   { top: 14%; left: 44%; animation: float3 8s ease-in-out infinite; }
+
+    @keyframes float1 { 0%,100%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(-26px) rotate(8deg);} }
+    @keyframes float2 { 0%,100%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(22px) rotate(-10deg);} }
+    @keyframes float3 { 0%,100%{ transform: translateY(0) rotate(0deg);} 50%{ transform: translateY(-18px) rotate(6deg);} }
+
+    /* ===== CENTER CONTENT ===== */
+    .center {
+      position: relative;
+      z-index: 5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .wordmark { width: min(760px, 90vw); height: auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,0.55)); }
+    .wordmark text {
+      font-family: 'Space Grotesk', 'Sora', sans-serif;
+      font-weight: 700;
+      letter-spacing: -2px;
+    }
+
+    .tagline {
+      margin-top: 22px;
+      font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+      font-weight: 300;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      animation: fadeup 1s ease 0.3s both;
+    }
+
+    /* ===== NAV BUTTONS ===== */
+    .nav {
+      display: flex;
+      gap: 16px;
+      margin-top: 44px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeup 1s ease 0.5s both;
+    }
+
+    .nav a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #fff;
+      text-decoration: none;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid transparent;
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    /* neon gradient outline */
+    .nav a::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      padding: 1px;
+      background: linear-gradient(120deg, var(--teal), var(--cyan), var(--magenta), var(--pink), var(--orange), var(--gold), var(--violet), var(--lavender));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.85;
+    }
+    .nav a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 34px rgba(124, 92, 255, 0.35), 0 0 18px rgba(34, 211, 238, 0.25);
+    }
+    .nav a:hover::before { opacity: 1; }
+
+    /* ===== BRAND ICON (lower-left) ===== */
+    .brand-badge {
+      position: fixed;
+      left: 28px;
+      bottom: 26px;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeup 1s ease 0.8s both;
+    }
+    .brand-badge .cube { width: 38px; height: 38px; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5)); }
+    .brand-badge span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(120deg, var(--teal), var(--cyan), var(--magenta), var(--gold), var(--lavender));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    @keyframes fadeup {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .nav a { padding: 12px 20px; font-size: 0.85rem; }
+      .tagline { letter-spacing: 3px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="leak a"></div>
+    <div class="leak b"></div>
+    <div class="leak c"></div>
+    <div class="orb o1"></div>
+    <div class="orb o2"></div>
+    <div class="orb o3"></div>
+
+    <!-- Floating low-poly shapes with holographic gradients -->
+    <div class="shape s-cube">
+      <svg width="92" height="92" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2dd4bf"/><stop offset="35%" stop-color="#22d3ee"/>
+            <stop offset="65%" stop-color="#e879f9"/><stop offset="100%" stop-color="#c4b5fd"/>
+          </linearGradient>
+        </defs>
+        <polygon points="50,8 88,30 50,52 12,30" fill="url(#g1)" opacity="0.95"/>
+        <polygon points="12,30 50,52 50,92 12,70" fill="url(#g1)" opacity="0.6"/>
+        <polygon points="88,30 50,52 50,92 88,70" fill="url(#g1)" opacity="0.75"/>
+      </svg>
+    </div>
+
+    <div class="shape s-diamond">
+      <svg width="70" height="70" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f472b6"/><stop offset="50%" stop-color="#fb923c"/>
+            <stop offset="100%" stop-color="#fcd34d"/>
+          </linearGradient>
+        </defs>
+        <polygon points="50,6 90,50 50,94 10,50" fill="url(#g2)" opacity="0.9"/>
+        <polygon points="50,6 90,50 50,50" fill="#fff" opacity="0.15"/>
+      </svg>
+    </div>
+
+    <div class="shape s-prism">
+      <svg width="80" height="80" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#22d3ee"/><stop offset="50%" stop-color="#a78bfa"/>
+            <stop offset="100%" stop-color="#e879f9"/>
+          </linearGradient>
+        </defs>
+        <polygon points="20,80 50,20 50,80" fill="url(#g3)" opacity="0.8"/>
+        <polygon points="50,20 80,80 50,80" fill="url(#g3)" opacity="0.55"/>
+      </svg>
+    </div>
+
+    <div class="shape s-tetra">
+      <svg width="64" height="64" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#fcd34d"/><stop offset="50%" stop-color="#2dd4bf"/>
+            <stop offset="100%" stop-color="#22d3ee"/>
+          </linearGradient>
+        </defs>
+        <polygon points="50,12 86,72 14,72" fill="url(#g4)" opacity="0.85"/>
+        <polygon points="50,12 50,72 14,72" fill="#fff" opacity="0.12"/>
+      </svg>
+    </div>
+
+    <div class="shape s-ring">
+      <svg width="58" height="58" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g5" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#a78bfa"/><stop offset="50%" stop-color="#f472b6"/>
+            <stop offset="100%" stop-color="#22d3ee"/>
+          </linearGradient>
+        </defs>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="url(#g5)" stroke-width="8" opacity="0.8"/>
+      </svg>
+    </div>
+
+    <div class="shape s-small">
+      <svg width="42" height="42" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g6" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#c4b5fd"/><stop offset="100%" stop-color="#2dd4bf"/>
+          </linearGradient>
+        </defs>
+        <rect x="22" y="22" width="56" height="56" rx="10" transform="rotate(20 50 50)" fill="url(#g6)" opacity="0.8"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Center content -->
+  <div class="center">
+    <svg class="wordmark" viewBox="0 0 760 200" role="img" aria-label="beige-3d">
+      <defs>
+        <linearGradient id="iri" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   stop-color="#2dd4bf"/>
+          <stop offset="14%"  stop-color="#22d3ee"/>
+          <stop offset="30%"  stop-color="#a78bfa"/>
+          <stop offset="44%"  stop-color="#e879f9"/>
+          <stop offset="58%"  stop-color="#f472b6"/>
+          <stop offset="72%"  stop-color="#fb923c"/>
+          <stop offset="85%"  stop-color="#fcd34d"/>
+          <stop offset="100%" stop-color="#c4b5fd"/>
+        </linearGradient>
+        <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+          <stop offset="45%" stop-color="#ffffff" stop-opacity="0.05"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/>
+        </filter>
+      </defs>
+
+      <!-- 3D depth shadow layer -->
+      <text x="380" y="138" text-anchor="middle" font-size="118" fill="#000" opacity="0.28" filter="url(#soft)" transform="translate(0,6)">beige&#8209;3d</text>
+      <!-- main iridescent text -->
+      <text x="380" y="132" text-anchor="middle" font-size="118" fill="url(#iri)" filter="url(#soft)">beige&#8209;3d</text>
+      <!-- glossy highlight -->
+      <text x="380" y="132" text-anchor="middle" font-size="118" fill="url(#gloss)" opacity="0.6">beige&#8209;3d</text>
+    </svg>
+
+    <p class="tagline">Impresion 3D &amp; Fabricacion Digital</p>
+
+    <nav class="nav">
+      <a href="#proceso">Nuestro Proceso</a>
+      <a href="/">Galeria de Productos</a>
+      <a href="#cotizar">Solicitar Cotizacion</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </div>
+
+  <!-- Brand icon lower-left -->
+  <div class="brand-badge">
+    <svg class="cube" viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#2dd4bf"/><stop offset="33%" stop-color="#22d3ee"/>
+          <stop offset="66%" stop-color="#e879f9"/><stop offset="100%" stop-color="#c4b5fd"/>
+        </linearGradient>
+      </defs>
+      <polygon points="50,8 88,30 50,52 12,30" fill="url(#bg)"/>
+      <polygon points="12,30 50,52 50,92 12,70" fill="url(#bg)" opacity="0.65"/>
+      <polygon points="88,30 50,52 50,92 88,70" fill="url(#bg)" opacity="0.8"/>
+    </svg>
+    <span>beige-3d</span>
+  </div>
+</body>
+</html>
