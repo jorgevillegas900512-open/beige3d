@@ -54,6 +54,8 @@ async function contarPorLetras() {
       }
     });
     renderFiltroAlfabetico(letras);
+    const statEl = document.getElementById('stat-productos');
+    if (statEl) statEl.textContent = productos.length;
     cargarProductos();
   } catch (error) {
     console.error('Error contando letras:', error);
@@ -84,9 +86,9 @@ function filtrarPorLetra(letra) {
 async function cargarProductos() {
   const buscar = document.getElementById('buscarInput').value;
   const categoria = document.getElementById('filtroCategoria').value;
-  const catalogo = document.getElementById('catalogo');
+  const catalogo = document.getElementById('catalogo-grid');
 
-  catalogo.innerHTML = '<div class="loading">Cargando productos...</div>';
+  catalogo.innerHTML = '<div class="loading">Cargando modelos...</div>';
 
   try {
     const params = new URLSearchParams({
@@ -101,10 +103,10 @@ async function cargarProductos() {
     const data = await res.json();
 
     document.getElementById('resultados-info').textContent =
-      `${data.pagination.total} productos encontrados${letraActual ? ' (letra ' + letraActual + ')' : ''}`;
+      `${data.pagination.total} modelos encontrados${letraActual ? ' (letra ' + letraActual + ')' : ''}`;
 
     if (data.productos.length === 0) {
-      catalogo.innerHTML = '<div class="no-resultados">No se encontraron productos.</div>';
+      catalogo.innerHTML = '<div class="no-resultados">No se encontraron modelos.</div>';
       document.getElementById('paginacion').innerHTML = '';
       return;
     }
@@ -113,7 +115,7 @@ async function cargarProductos() {
     totalPaginas = data.pagination.pages;
     renderPaginacion();
   } catch (error) {
-    catalogo.innerHTML = '<div class="no-resultados">Error cargando productos</div>';
+    catalogo.innerHTML = '<div class="no-resultados">Error cargando modelos</div>';
   }
 }
 

@@ -2,3 +2,7 @@ node_modules/
 data/catalogo.json
 *.log
 .env
+
+# Imagenes fuente (no versionar)
+beige-3d.jfif
+Gemini_Generated_Image_*.jfif

@@ -3,20 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catalogo 3D - Impresiones</title>
+  <title>Beige3D - Catalogo de Impresion 3D</title>
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <h1>Catalogo 3D</h1>
-      <p>Impresiones 3D de calidad profesional</p>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <img src="/logo.jfif" alt="Beige3D" class="brand-logo" />
+        <span class="brand-text">BEIGE<span class="accent">3D</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#catalogo" class="nav-link">Catalogo</a>
+        <a href="#contacto" class="nav-link">Contacto</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">IMPRESION <span class="glow">3D</span></h1>
+      <p class="hero-subtitle">Disenos unicos creados con precision tecnologica</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" id="stat-productos">0</span><span class="stat-label">Modelos</span></div>
+        <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Personalizado</span></div>
+        <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">Disponible</span></div>
+      </div>
     </div>
   </header>
 
   <main class="container">
-    <section class="buscador">
-      <input type="text" id="buscarInput" placeholder="Buscar producto..." />
+    <section class="controls" id="catalogo">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="buscarInput" placeholder="Buscar modelo..." />
+      </div>
       <select id="filtroCategoria">
         <option value="">Todas las categorias</option>
       </select>
@@ -26,8 +51,8 @@
 
     <section id="resultados-info" class="resultados-info"></section>
 
-    <section id="catalogo" class="catalogo">
-      <div class="loading">Cargando productos...</div>
+    <section id="catalogo-grid" class="catalogo">
+      <div class="loading">Cargando modelos...</div>
     </section>
 
     <section id="paginacion" class="paginacion"></section>
@@ -40,9 +65,17 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container">
-      <p>Catalogo de impresion 3D &copy; 2026</p>
+  <footer class="footer" id="contacto">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <img src="/logo.jfif" alt="Beige3D" class="footer-logo" />
+        <span class="brand-text">BEIGE<span class="accent">3D</span></span>
+      </div>
+      <p class="footer-text">Impresion 3D de calidad profesional &copy; 2026</p>
+      <div class="footer-links">
+        <a href="https://makerworld.com" target="_blank" rel="noopener">MakerWorld</a>
+        <a href="/admin/" class="admin-link">Panel Admin</a>
+      </div>
     </div>
   </footer>
 
