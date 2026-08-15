@@ -15,6 +15,14 @@ body {
   text-align: center;
 }
 
+.login-logo {
+  width: 90px;
+  height: auto;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
 .login-box h1 { margin-bottom: 10px; color: #1a1a2e; }
 .login-box p { color: #666; margin-bottom: 20px; }
 
@@ -51,6 +59,9 @@ body {
   color: white;
   padding: 15px 30px;
 }
+
+.nav-left { display: flex; align-items: center; gap: 12px; }
+.nav-logo { width: 36px; height: auto; border-radius: 8px; }
 
 .nav-right { display: flex; align-items: center; gap: 15px; }
 .nav-right span { font-size: 0.9rem; opacity: 0.8; }

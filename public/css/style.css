@@ -156,6 +156,19 @@ body {
   padding: 40px 20px;
 }
 
+.hero-logo {
+  width: min(360px, 80vw);
+  height: auto;
+  border-radius: 28px;
+  filter: drop-shadow(0 16px 40px rgba(255, 158, 200, 0.35));
+  animation: floatHero 8s ease-in-out infinite;
+}
+
+@keyframes floatHero {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+
 .hero-title {
   font-family: 'Fredoka', sans-serif;
   font-weight: 700;
