@@ -88,7 +88,7 @@ async function cargarProductos() {
   const categoria = document.getElementById('filtroCategoria').value;
   const catalogo = document.getElementById('catalogo-grid');
 
-  catalogo.innerHTML = '<div class="loading">Cargando modelos...</div>';
+    catalogo.innerHTML = '<div class="loading">Cargando juguetes...</div>';
 
   try {
     const params = new URLSearchParams({
@@ -106,7 +106,7 @@ async function cargarProductos() {
       `${data.pagination.total} modelos encontrados${letraActual ? ' (letra ' + letraActual + ')' : ''}`;
 
     if (data.productos.length === 0) {
-      catalogo.innerHTML = '<div class="no-resultados">No se encontraron modelos.</div>';
+      catalogo.innerHTML = '<div class="no-resultados">No se encontraron juguetes.</div>';
       document.getElementById('paginacion').innerHTML = '';
       return;
     }
@@ -115,7 +115,7 @@ async function cargarProductos() {
     totalPaginas = data.pagination.pages;
     renderPaginacion();
   } catch (error) {
-    catalogo.innerHTML = '<div class="no-resultados">Error cargando modelos</div>';
+    catalogo.innerHTML = '<div class="no-resultados">Error cargando juguetes</div>';
   }
 }
 
