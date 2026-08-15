@@ -372,6 +372,73 @@ body {
 }
 .btn-delete:hover { background: #c0392b; }
 
+/* === CRUD (insumos, proveedores, clientes, pedidos) === */
+.crud-form {
+  background: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.crud-form input,
+.crud-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  width: 100%;
+}
+
+.crud-form textarea { resize: vertical; margin-bottom: 12px; }
+
+.crud-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  background: #f8f9fa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.crud-card-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px 20px;
+  flex: 1;
+}
+
+.crud-field label {
+  display: block;
+  font-size: 0.7rem;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.crud-field span {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.92rem;
+  word-break: break-word;
+}
+
+.crud-actions {
+  flex-shrink: 0;
+}
+
 @media (max-width: 768px) {
   .admin-content { flex-direction: column; }
   .admin-sidebar { width: 100%; display: flex; overflow-x: auto; padding: 0; }

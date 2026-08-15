@@ -43,8 +43,20 @@
         <button class="nav-btn" data-section="pedidos" onclick="showSection('pedidos')">
           Pedidos
         </button>
+        <button class="nav-btn" data-section="insumos" onclick="showSection('insumos')">
+          Stock de Insumos
+        </button>
+        <button class="nav-btn" data-section="proveedores" onclick="showSection('proveedores')">
+          Proveedores
+        </button>
+        <button class="nav-btn" data-section="clientes" onclick="showSection('clientes')">
+          Clientes
+        </button>
         <button class="nav-btn" data-section="usuarios" onclick="showSection('usuarios')">
           Usuarios
+        </button>
+        <button class="nav-btn" data-section="perfil" onclick="showSection('perfil')">
+          Mi Cuenta
         </button>
       </aside>
 
@@ -70,6 +82,20 @@
 
         <section id="section-pedidos" class="admin-section">
           <h3>Pedidos</h3>
+          <button class="btn-primary" onclick="toggleNuevoPedido()" style="margin-bottom:15px;">+ Nuevo Pedido</button>
+          <div id="nuevo-pedido-form" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="p-cliente" placeholder="Nombre del cliente *" />
+              <input type="text" id="p-telefono" placeholder="Telefono/WhatsApp" />
+              <input type="email" id="p-email" placeholder="Email" />
+              <input type="number" id="p-producto" placeholder="ID producto (opcional)" />
+              <input type="number" id="p-cantidad" placeholder="Cantidad" value="1" min="1" />
+              <input type="text" id="p-color" placeholder="Color de filamento" />
+              <input type="number" id="p-precio" placeholder="Precio cotizado" step="0.01" />
+            </div>
+            <textarea id="p-notas" placeholder="Notas" rows="2"></textarea>
+            <button onclick="crearPedido()" class="btn-primary">Guardar Pedido</button>
+          </div>
           <div class="pedidos-filtros">
             <select id="filtro-estado" onchange="cargarPedidos()">
               <option value="">Todos</option>
@@ -82,6 +108,57 @@
           <div id="admin-pedidos"></div>
         </section>
 
+        <section id="section-insumos" class="admin-section">
+          <h3>Stock de Insumos</h3>
+          <button class="btn-primary" onclick="toggleForm('insumo')" style="margin-bottom:15px;">+ Nuevo Insumo</button>
+          <div id="form-insumo" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="i-nombre" placeholder="Nombre *" />
+              <input type="text" id="i-categoria" placeholder="Categoria (filamento, resina...)" />
+              <input type="number" id="i-cantidad" placeholder="Cantidad" step="0.01" />
+              <input type="text" id="i-unidad" placeholder="Unidad (kg, m, und)" />
+              <input type="number" id="i-minimo" placeholder="Stock minimo" step="0.01" />
+              <input type="text" id="i-proveedor" placeholder="Proveedor" />
+            </div>
+            <textarea id="i-notas" placeholder="Notas" rows="2"></textarea>
+            <button onclick="guardarInsumo()" class="btn-primary">Guardar Insumo</button>
+          </div>
+          <div id="admin-insumos"></div>
+        </section>
+
+        <section id="section-proveedores" class="admin-section">
+          <h3>Agenda de Proveedores</h3>
+          <button class="btn-primary" onclick="toggleForm('proveedor')" style="margin-bottom:15px;">+ Nuevo Proveedor</button>
+          <div id="form-proveedor" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="pr-empresa" placeholder="Empresa *" />
+              <input type="text" id="pr-contacto" placeholder="Persona de contacto" />
+              <input type="text" id="pr-telefono" placeholder="Telefono" />
+              <input type="email" id="pr-email" placeholder="Email" />
+              <input type="text" id="pr-direccion" placeholder="Direccion" />
+            </div>
+            <textarea id="pr-notas" placeholder="Notas" rows="2"></textarea>
+            <button onclick="guardarProveedor()" class="btn-primary">Guardar Proveedor</button>
+          </div>
+          <div id="admin-proveedores"></div>
+        </section>
+
+        <section id="section-clientes" class="admin-section">
+          <h3>Agenda de Clientes</h3>
+          <button class="btn-primary" onclick="toggleForm('cliente')" style="margin-bottom:15px;">+ Nuevo Cliente</button>
+          <div id="form-cliente" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="c-nombre" placeholder="Nombre *" />
+              <input type="text" id="c-telefono" placeholder="Telefono" />
+              <input type="email" id="c-email" placeholder="Email" />
+              <input type="text" id="c-direccion" placeholder="Direccion" />
+            </div>
+            <textarea id="c-notas" placeholder="Notas (pedidos previos, preferencias...)" rows="2"></textarea>
+            <button onclick="guardarCliente()" class="btn-primary">Guardar Cliente</button>
+          </div>
+          <div id="admin-clientes"></div>
+        </section>
+
         <section id="section-usuarios" class="admin-section">
           <h3>Gestionar Usuarios</h3>
           <div class="usuario-form">
@@ -90,6 +167,18 @@
             <button onclick="crearUsuario()" class="btn-primary">Crear usuario</button>
           </div>
           <div id="admin-usuarios"></div>
+        </section>
+
+        <section id="section-perfil" class="admin-section">
+          <h3>Mi Cuenta</h3>
+          <div class="crud-form">
+            <div class="form-grid">
+              <input type="password" id="pass-actual" placeholder="Contrasena actual *" />
+              <input type="password" id="pass-nueva" placeholder="Nueva contrasena *" />
+              <input type="password" id="pass-confirm" placeholder="Confirmar nueva contrasena *" />
+            </div>
+            <button onclick="cambiarPassword()" class="btn-primary">Cambiar Contrasena</button>
+          </div>
         </section>
       </main>
     </div>

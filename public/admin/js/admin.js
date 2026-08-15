@@ -60,6 +60,9 @@ function showSection(section) {
 
   if (section === 'pedidos') cargarPedidos();
   if (section === 'usuarios') cargarUsuarios();
+  if (section === 'insumos') cargarInsumos();
+  if (section === 'proveedores') cargarProveedores();
+  if (section === 'clientes') cargarClientes();
 }
 
 let adminBuscarTimer;
@@ -420,6 +423,268 @@ async function eliminarUsuario(id) {
       cargarUsuarios();
     } else {
       alert(data.error || 'Error al eliminar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === TOGGLES ===
+function toggleNuevoPedido() {
+  const f = document.getElementById('nuevo-pedido-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+function toggleForm(tipo) {
+  const f = document.getElementById(`form-${tipo}`);
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+// === PEDIDOS (manual) ===
+async function crearPedido() {
+  const cliente_nombre = document.getElementById('p-cliente').value;
+  if (!cliente_nombre) { alert('El nombre del cliente es obligatorio'); return; }
+
+  const body = {
+    cliente_nombre,
+    cliente_telefono: document.getElementById('p-telefono').value,
+    cliente_email: document.getElementById('p-email').value,
+    producto_id: parseInt(document.getElementById('p-producto').value) || null,
+    cantidad: parseInt(document.getElementById('p-cantidad').value) || 1,
+    color_filamento: document.getElementById('p-color').value,
+    precio_cotizado: parseFloat(document.getElementById('p-precio').value) || 0,
+    notas: document.getElementById('p-notas').value
+  };
+
+  try {
+    const res = await fetch('/api/admin/pedidos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      ['p-cliente','p-telefono','p-email','p-producto','p-cantidad','p-color','p-precio','p-notas'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('p-cantidad').value = 1;
+      toggleNuevoPedido();
+      cargarPedidos();
+    } else {
+      alert(data.error || 'Error al crear pedido');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === GENERIC CRUD HELPER ===
+function renderCrud(containerId, items, columns, tipo) {
+  const container = document.getElementById(containerId);
+  if (!items.length) { container.innerHTML = '<p style="color:#888; padding:20px;">No hay registros</p>'; return; }
+
+  container.innerHTML = items.map(item => `
+    <div class="crud-card">
+      <div class="crud-card-body">
+        ${columns.map(col => `<div class="crud-field"><label>${col.label}</label><span>${item[col.key] != null ? escapeHtml(String(item[col.key])) : '-'}</span></div>`).join('')}
+      </div>
+      <div class="crud-actions">
+        <button onclick="eliminarItem('${tipo}', ${item.id})" class="btn-delete">Eliminar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+async function eliminarItem(tipo, id) {
+  if (!confirm('Eliminar este registro?')) return;
+  try {
+    const res = await fetch(`/api/admin/${tipo}/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (tipo === 'insumos') cargarInsumos();
+      if (tipo === 'proveedores') cargarProveedores();
+      if (tipo === 'clientes') cargarClientes();
+    } else {
+      alert(data.error || 'Error al eliminar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === INSUMOS ===
+async function cargarInsumos() {
+  try {
+    const res = await fetch('/api/admin/insumos', { headers: { Authorization: `Bearer ${token}` } });
+    if (res.status === 401) { logout(); return; }
+    const items = await res.json();
+    renderCrud('admin-insumos', items, [
+      { key: 'nombre', label: 'Nombre' },
+      { key: 'categoria', label: 'Categoria' },
+      { key: 'cantidad', label: 'Cantidad' },
+      { key: 'unidad', label: 'Unidad' },
+      { key: 'stock_minimo', label: 'Stock minimo' },
+      { key: 'proveedor', label: 'Proveedor' },
+      { key: 'notas', label: 'Notas' }
+    ], 'insumos');
+  } catch (error) {
+    document.getElementById('admin-insumos').innerHTML = '<p>Error cargando insumos</p>';
+  }
+}
+
+async function guardarInsumo() {
+  const nombre = document.getElementById('i-nombre').value;
+  if (!nombre) { alert('El nombre es obligatorio'); return; }
+  const body = {
+    nombre,
+    categoria: document.getElementById('i-categoria').value,
+    cantidad: parseFloat(document.getElementById('i-cantidad').value) || 0,
+    unidad: document.getElementById('i-unidad').value,
+    stock_minimo: parseFloat(document.getElementById('i-minimo').value) || 0,
+    proveedor: document.getElementById('i-proveedor').value,
+    notas: document.getElementById('i-notas').value
+  };
+  try {
+    const res = await fetch('/api/admin/insumos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      ['i-nombre','i-categoria','i-cantidad','i-unidad','i-minimo','i-proveedor','i-notas'].forEach(id => document.getElementById(id).value = '');
+      toggleForm('insumo');
+      cargarInsumos();
+    } else {
+      alert(data.error || 'Error al guardar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === PROVEEDORES ===
+async function cargarProveedores() {
+  try {
+    const res = await fetch('/api/admin/proveedores', { headers: { Authorization: `Bearer ${token}` } });
+    if (res.status === 401) { logout(); return; }
+    const items = await res.json();
+    renderCrud('admin-proveedores', items, [
+      { key: 'empresa', label: 'Empresa' },
+      { key: 'contacto', label: 'Contacto' },
+      { key: 'telefono', label: 'Telefono' },
+      { key: 'email', label: 'Email' },
+      { key: 'direccion', label: 'Direccion' },
+      { key: 'notas', label: 'Notas' }
+    ], 'proveedores');
+  } catch (error) {
+    document.getElementById('admin-proveedores').innerHTML = '<p>Error cargando proveedores</p>';
+  }
+}
+
+async function guardarProveedor() {
+  const empresa = document.getElementById('pr-empresa').value;
+  if (!empresa) { alert('La empresa es obligatoria'); return; }
+  const body = {
+    empresa,
+    contacto: document.getElementById('pr-contacto').value,
+    telefono: document.getElementById('pr-telefono').value,
+    email: document.getElementById('pr-email').value,
+    direccion: document.getElementById('pr-direccion').value,
+    notas: document.getElementById('pr-notas').value
+  };
+  try {
+    const res = await fetch('/api/admin/proveedores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      ['pr-empresa','pr-contacto','pr-telefono','pr-email','pr-direccion','pr-notas'].forEach(id => document.getElementById(id).value = '');
+      toggleForm('proveedor');
+      cargarProveedores();
+    } else {
+      alert(data.error || 'Error al guardar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === CLIENTES ===
+async function cargarClientes() {
+  try {
+    const res = await fetch('/api/admin/clientes', { headers: { Authorization: `Bearer ${token}` } });
+    if (res.status === 401) { logout(); return; }
+    const items = await res.json();
+    renderCrud('admin-clientes', items, [
+      { key: 'nombre', label: 'Nombre' },
+      { key: 'telefono', label: 'Telefono' },
+      { key: 'email', label: 'Email' },
+      { key: 'direccion', label: 'Direccion' },
+      { key: 'notas', label: 'Notas' }
+    ], 'clientes');
+  } catch (error) {
+    document.getElementById('admin-clientes').innerHTML = '<p>Error cargando clientes</p>';
+  }
+}
+
+async function guardarCliente() {
+  const nombre = document.getElementById('c-nombre').value;
+  if (!nombre) { alert('El nombre es obligatorio'); return; }
+  const body = {
+    nombre,
+    telefono: document.getElementById('c-telefono').value,
+    email: document.getElementById('c-email').value,
+    direccion: document.getElementById('c-direccion').value,
+    notas: document.getElementById('c-notas').value
+  };
+  try {
+    const res = await fetch('/api/admin/clientes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (data.success) {
+      ['c-nombre','c-telefono','c-email','c-direccion','c-notas'].forEach(id => document.getElementById(id).value = '');
+      toggleForm('cliente');
+      cargarClientes();
+    } else {
+      alert(data.error || 'Error al guardar');
+    }
+  } catch (error) {
+    alert('Error de conexion');
+  }
+}
+
+// === CAMBIAR CONTRASENA ===
+async function cambiarPassword() {
+  const actual = document.getElementById('pass-actual').value;
+  const nueva = document.getElementById('pass-nueva').value;
+  const confirm = document.getElementById('pass-confirm').value;
+
+  if (!actual || !nueva || !confirm) { alert('Completa todos los campos'); return; }
+  if (nueva !== confirm) { alert('Las contrasenas nuevas no coinciden'); return; }
+
+  try {
+    const res = await fetch('/api/admin/password', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ actual, nueva })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('Contrasena cambiada correctamente');
+      ['pass-actual','pass-nueva','pass-confirm'].forEach(id => document.getElementById(id).value = '');
+    } else {
+      alert(data.error || 'Error al cambiar contrasena');
     }
   } catch (error) {
     alert('Error de conexion');

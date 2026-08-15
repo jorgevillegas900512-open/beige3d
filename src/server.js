@@ -86,6 +86,23 @@ app.delete('/api/admin/usuarios/:id', authMiddleware, (req, res) => {
   res.json({ success: true });
 });
 
+app.put('/api/admin/password', authMiddleware, (req, res) => {
+  const { actual, nueva } = req.body;
+  if (!actual || !nueva) return res.status(400).json({ error: 'Contrasena actual y nueva requeridas' });
+  if (nueva.length < 4) return res.status(400).json({ error: 'La nueva contrasena debe tener al menos 4 caracteres' });
+
+  const db = readDb();
+  const admin = db.admins.find(a => a.id === req.adminId);
+  if (!admin) return res.status(404).json({ error: 'Administrador no encontrado' });
+
+  const valid = bcrypt.compareSync(actual, admin.password);
+  if (!valid) return res.status(401).json({ error: 'La contrasena actual es incorrecta' });
+
+  admin.password = bcrypt.hashSync(nueva, 10);
+  writeDb(db);
+  res.json({ success: true });
+});
+
 // === PRODUCTOS PUBLICOS ===
 app.get('/api/productos', (req, res) => {
   const { buscar, categoria, letra, page = 1, limit = 20 } = req.query;
@@ -288,6 +305,48 @@ app.post('/api/pedidos', (req, res) => {
 
   res.json({ success: true, id: pedido.id, mensaje: 'Pedido recibido! Te contactaremos pronto.' });
 });
+
+// === HELPER CRUD GENERICO ===
+function crearCrud({ ruta, campoId, campoNext, campoLista }) {
+  app.get(`/api/admin/${ruta}`, authMiddleware, (req, res) => {
+    const db = readDb();
+    res.json(db[campoLista] || []);
+  });
+
+  app.post(`/api/admin/${ruta}`, authMiddleware, (req, res) => {
+    const db = readDb();
+    const item = { id: db[campoNext]++, ...req.body, created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+    db[campoLista].push(item);
+    writeDb(db);
+    res.json({ success: true, id: item.id });
+  });
+
+  app.put(`/api/admin/${ruta}/:id`, authMiddleware, (req, res) => {
+    const db = readDb();
+    const id = parseInt(req.params.id);
+    const item = db[campoLista].find(x => x.id === id);
+    if (!item) return res.status(404).json({ error: 'No encontrado' });
+    Object.assign(item, req.body, { updated_at: new Date().toISOString() });
+    delete item.id;
+    item.id = id;
+    writeDb(db);
+    res.json({ success: true });
+  });
+
+  app.delete(`/api/admin/${ruta}/:id`, authMiddleware, (req, res) => {
+    const db = readDb();
+    const id = parseInt(req.params.id);
+    const existe = db[campoLista].find(x => x.id === id);
+    if (!existe) return res.status(404).json({ error: 'No encontrado' });
+    db[campoLista] = db[campoLista].filter(x => x.id !== id);
+    writeDb(db);
+    res.json({ success: true });
+  });
+}
+
+crearCrud({ ruta: 'insumos', campoId: 'id', campoNext: 'next_insumo_id', campoLista: 'insumos' });
+crearCrud({ ruta: 'proveedores', campoId: 'id', campoNext: 'next_proveedor_id', campoLista: 'proveedores' });
+crearCrud({ ruta: 'clientes', campoId: 'id', campoNext: 'next_cliente_id', campoLista: 'clientes' });
 
 // === SPA FALLBACK ===
 app.get('*', (req, res) => {

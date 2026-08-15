@@ -9,9 +9,15 @@ const DEFAULT_DATA = {
   productos: [],
   admins: [],
   pedidos: [],
+  insumos: [],
+  proveedores: [],
+  clientes: [],
   next_producto_id: 1,
   next_admin_id: 1,
-  next_pedido_id: 1
+  next_pedido_id: 1,
+  next_insumo_id: 1,
+  next_proveedor_id: 1,
+  next_cliente_id: 1
 };
 
 function ensureDataDir() {
@@ -42,6 +48,12 @@ function initDatabase() {
   if (!db.next_producto_id) db.next_producto_id = 1;
   if (!db.next_admin_id) db.next_admin_id = 1;
   if (!db.next_pedido_id) db.next_pedido_id = 1;
+  if (!db.insumos) db.insumos = [];
+  if (!db.proveedores) db.proveedores = [];
+  if (!db.clientes) db.clientes = [];
+  if (!db.next_insumo_id) db.next_insumo_id = 1;
+  if (!db.next_proveedor_id) db.next_proveedor_id = 1;
+  if (!db.next_cliente_id) db.next_cliente_id = 1;
 
   // Crear admin por defecto si no existe ninguno
   if (db.admins.length === 0) {
