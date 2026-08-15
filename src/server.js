@@ -348,6 +348,15 @@ crearCrud({ ruta: 'insumos', campoId: 'id', campoNext: 'next_insumo_id', campoLi
 crearCrud({ ruta: 'proveedores', campoId: 'id', campoNext: 'next_proveedor_id', campoLista: 'proveedores' });
 crearCrud({ ruta: 'clientes', campoId: 'id', campoNext: 'next_cliente_id', campoLista: 'clientes' });
 
+// === RUTAS DE PAGINAS ===
+app.get('/catalogo', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'catalogo.html'));
+});
+
+app.get('/catalogo.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'catalogo.html'));
+});
+
 // === SPA FALLBACK ===
 app.get('*', (req, res) => {
   if (req.path.startsWith('/admin')) {
