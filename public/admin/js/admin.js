@@ -5,6 +5,7 @@ let adminPage = 1;
 // Agrega aqui los botones que abren paginas para buscar modelos.
 // cada item: { label: texto del boton, url: direccion, color: color del punto (opcional) }
 const ENLACES_RAPIDOS = [
+  { label: 'MakerWorld - Modelos 3D', url: 'https://makerworld.com/en/3d-models' },
   { label: 'MakerWorld', url: 'https://makerworld.com' },
   { label: 'MakerWorld - Juguetes', url: 'https://makerworld.com/es/models?keyword=juguetes' },
 ];
