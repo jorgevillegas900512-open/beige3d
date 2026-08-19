@@ -1,0 +1,33 @@
+<svg viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Beige 3D">
+  <defs>
+    <radialGradient id="beigeGrad" cx="50%" cy="42%" r="60%">
+      <stop offset="0%" stop-color="#f3e9d6"/>
+      <stop offset="100%" stop-color="#ddc9a3"/>
+    </radialGradient>
+  </defs>
+
+  <!-- circulo beige -->
+  <circle cx="210" cy="210" r="200" fill="url(#beigeGrad)" stroke="#cbb994" stroke-width="2"/>
+
+  <!-- cubo wireframe -->
+  <g stroke="#23283a" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- cara superior (rombo) -->
+    <polygon points="172,148 224,176 172,204 120,176"/>
+    <!-- cara izquierda -->
+    <polygon points="120,176 172,204 172,266 120,238"/>
+    <!-- cara derecha -->
+    <polygon points="224,176 172,204 172,266 224,238"/>
+    <!-- lineas de malla (internas) -->
+    <line x1="120" y1="176" x2="172" y2="204"/>
+    <line x1="224" y1="176" x2="172" y2="204"/>
+    <line x1="172" y1="204" x2="172" y2="266"/>
+    <line x1="146" y1="118" x2="172" y2="204" opacity="0.35"/>
+    <line x1="198" y1="118" x2="172" y2="204" opacity="0.35"/>
+  </g>
+
+  <!-- texto 3D a la derecha del cubo -->
+  <text x="262" y="200" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="58" fill="#23283a" letter-spacing="-2">3D</text>
+
+  <!-- BeiGe debajo, alternando mayusculas/minusculas -->
+  <text x="210" y="338" text-anchor="middle" font-family="'Arial Black', Arial, sans-serif" font-weight="900" font-size="52" fill="#23283a" letter-spacing="2">BeiGe</text>
+</svg>
