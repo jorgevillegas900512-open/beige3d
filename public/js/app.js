@@ -227,17 +227,17 @@ async function verDetalle(id) {
         </div>
       ` : ''}
 
-      ${p.precio_total > 0 ? `
-        <div style="margin-top:15px; padding:15px; background:#e8f5e9; border-radius:8px;">
-          <strong style="font-size:1.3rem; color:#2e7d32;">Precio: $${p.precio_total.toFixed(2)}</strong>
+       ${p.precio_total > 0 ? `
+        <div style="margin-top:15px; padding:15px; background:rgba(127,209,160,0.14); border:1px solid rgba(127,209,160,0.3); border-radius:12px;">
+          <strong style="font-size:1.3rem; color:#7fd1a0;">Precio: $${p.precio_total.toFixed(2)}</strong>
         </div>
       ` : ''}
 
-      <a href="${p.url_makerworld || '#'}" target="_blank" class="btn-solicitar">
+      <a href="${p.url_makerworld || '#'}" target="_blank" class="btn-solicitar" style="background:linear-gradient(135deg,#4db8ff,#a874ff)">
         Ver en MakerWorld
       </a>
 
-      <button class="btn-solicitar" style="background:#1976d2; margin-left:10px" onclick="solicitarImpresion(${p.id}, '${p.titulo.replace(/'/g, "\\'")}')">
+      <button class="btn-solicitar" style="background:linear-gradient(135deg,#e3d3b4,#a874ff); margin-left:10px" onclick="solicitarImpresion(${p.id}, '${p.titulo.replace(/'/g, "\\'")}')">
         Solicitar impresion
       </button>
     `;
