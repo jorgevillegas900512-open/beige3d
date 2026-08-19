@@ -1,6 +1,14 @@
 let token = localStorage.getItem('admin_token');
 let adminPage = 1;
 
+// === ENLACES RAPIDOS PARA IMPORTAR ===
+// Agrega aqui los botones que abren paginas para buscar modelos.
+// cada item: { label: texto del boton, url: direccion, color: color del punto (opcional) }
+const ENLACES_RAPIDOS = [
+  { label: 'MakerWorld', url: 'https://makerworld.com' },
+  { label: 'MakerWorld - Juguetes', url: 'https://makerworld.com/es/models?keyword=juguetes' },
+];
+
 document.addEventListener('DOMContentLoaded', () => {
   if (token) {
     mostrarPanel();
@@ -10,7 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     login();
   });
+
+  renderEnlacesRapidos();
 });
+
+function renderEnlacesRapidos() {
+  const container = document.getElementById('enlaces-rapidos');
+  if (!container) return;
+  container.innerHTML = ENLACES_RAPIDOS.map((e, i) => {
+    const dot = e.color ? `<span class="enlace-dot" style="background:${e.color}"></span>` : '<span class="enlace-dot"></span>';
+    return `<a class="enlace-btn" href="${e.url}" target="_blank" rel="noopener">${dot}${e.label}</a>`;
+  }).join('');
+}
 
 async function login() {
   const usuario = document.getElementById('login-usuario').value;

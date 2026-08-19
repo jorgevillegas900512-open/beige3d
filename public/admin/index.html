@@ -75,7 +75,9 @@
 
         <section id="section-importar" class="admin-section">
           <h3>Importar productos de MakerWorld</h3>
-          <p style="color:#666; margin-bottom:15px;">Pega las URLs de los productos de MakerWorld. Puedes poner varias, una por linea.</p>
+          <p style="color:var(--muted); margin-bottom:15px;">Atajos para buscar modelos. Hacé clic para abrir la pagina en una pestaña nueva y luego pega el URL del producto abajo.</p>
+          <div id="enlaces-rapidos" class="enlaces-rapidos"></div>
+          <p style="color:var(--muted); margin:15px 0;">Pega las URLs de los productos de MakerWorld. Puedes poner varias, una por linea.</p>
           <div class="import-form" style="flex-direction:column;">
             <textarea id="import-urls" rows="6" placeholder="https://makerworld.com/en/models/2316580-spring-swing-couple-silhouette&#10;https://makerworld.com/en/models/2280071-leopard-2-a7-main-battle-tank&#10;..." style="width:100%; padding:12px; border:1px solid #ddd; border-radius:6px; font-family:inherit; resize:vertical;"></textarea>
             <button onclick="importarProductos()" class="btn-primary" style="align-self:flex-start;">Importar productos</button>
