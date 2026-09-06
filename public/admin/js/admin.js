@@ -108,12 +108,12 @@ async function cargarAdminProductos(page = 1) {
 
     container.innerHTML = data.productos.map(p => `
       <div class="admin-card" onclick="verProductoAdmin(${p.id})">
-        <img src="${p.imagen_principal || 'https://via.placeholder.com/100'}" alt="${p.titulo}"
+        <img src="${p.imagen_principal || 'https://via.placeholder.com/100'}" alt="${escapeHtml(p.titulo || '')}"
              onerror="this.src='https://via.placeholder.com/100'" />
         <div class="admin-card-info">
-          <h4>${p.titulo}</h4>
-          <p>${p.categoria || 'General'} | ${p.tiempo_impresion_horas || 0}h ${p.tiempo_impresion_minutos || 0}m | ${p.peso_gramos || 0}g</p>
-          <p>MakerWorld ID: ${p.makerworld_id || 'N/A'}</p>
+          <h4>${escapeHtml(p.titulo || '')}</h4>
+          <p>${escapeHtml(p.categoria || 'General')} | ${p.tiempo_impresion_horas || 0}h ${p.tiempo_impresion_minutos || 0}m | ${p.peso_gramos || 0}g</p>
+          <p>MakerWorld ID: ${escapeHtml(p.makerworld_id || 'N/A')}</p>
           <p class="precio">${p.precio_total > 0 ? '$' + p.precio_total.toFixed(2) : 'Sin precio'}</p>
         </div>
       </div>
@@ -139,8 +139,8 @@ async function verProductoAdmin(id) {
     try { filamentos = JSON.parse(p.filamentos || '[]'); } catch(e) {}
 
     document.getElementById('producto-modal-body').innerHTML = `
-      <h2>${p.titulo}</h2>
-      <p style="color:#888; margin-bottom:15px">MakerWorld ID: ${p.makerworld_id || 'N/A'} | <a href="${p.url_makerworld || '#'}" target="_blank">Ver en MakerWorld</a></p>
+      <h2>${escapeHtml(p.titulo || '')}</h2>
+      <p style="color:#888; margin-bottom:15px">MakerWorld ID: ${escapeHtml(p.makerworld_id || 'N/A')} | <a href="${p.url_makerworld || '#'}" target="_blank">Ver en MakerWorld</a></p>
 
       <div class="modal-galeria" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; margin-bottom:20px;">
         <img src="${p.imagen_principal || 'https://via.placeholder.com/300'}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;"
@@ -342,16 +342,16 @@ async function cargarPedidos() {
     container.innerHTML = pedidos.map(p => `
       <div class="pedido-card">
         <div class="pedido-header">
-          <strong>${p.cliente_nombre || 'Sin nombre'}</strong>
-          <span class="pedido-estado estado-${p.estado}">${p.estado}</span>
+          <strong>${escapeHtml(p.cliente_nombre || 'Sin nombre')}</strong>
+          <span class="pedido-estado estado-${escapeHtml(p.estado)}">${escapeHtml(p.estado)}</span>
         </div>
         <div class="pedido-detalle">
-          <p><strong>Producto:</strong> ${p.producto_titulo || 'N/A'}</p>
-          <p><strong>Telefono:</strong> ${p.cliente_telefono || 'N/A'}</p>
-          <p><strong>Email:</strong> ${p.cliente_email || 'N/A'}</p>
+          <p><strong>Producto:</strong> ${escapeHtml(p.producto_titulo || 'N/A')}</p>
+          <p><strong>Telefono:</strong> ${escapeHtml(p.cliente_telefono || 'N/A')}</p>
+          <p><strong>Email:</strong> ${escapeHtml(p.cliente_email || 'N/A')}</p>
           <p><strong>Cantidad:</strong> ${p.cantidad}</p>
-          ${p.color_filamento ? `<p><strong>Color:</strong> ${p.color_filamento}</p>` : ''}
-          ${p.notas ? `<p><strong>Notas:</strong> ${p.notas}</p>` : ''}
+          ${p.color_filamento ? `<p><strong>Color:</strong> ${escapeHtml(p.color_filamento)}</p>` : ''}
+          ${p.notas ? `<p><strong>Notas:</strong> ${escapeHtml(p.notas)}</p>` : ''}
           ${p.precio_cotizado > 0 ? `<p><strong>Precio:</strong> $${p.precio_cotizado.toFixed(2)}</p>` : ''}
           <p><strong>Fecha:</strong> ${new Date(p.created_at).toLocaleDateString('es')}</p>
         </div>

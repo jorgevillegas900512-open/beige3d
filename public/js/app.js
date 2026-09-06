@@ -25,6 +25,10 @@ function debounce(fn, delay) {
   };
 }
 
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
 async function cargarCategorias() {
   try {
     const res = await fetch('/api/categorias');
@@ -128,18 +132,18 @@ function crearTarjeta(producto) {
   return `
     <div class="producto-card" onclick="verDetalle(${producto.id})">
       <img src="${producto.imagen_principal || 'https://via.placeholder.com/300x220?text=Sin+imagen'}"
-           alt="${producto.titulo}" loading="lazy"
+           alt="${escapeHtml(producto.titulo || '')}" loading="lazy"
            onerror="this.src='https://via.placeholder.com/300x220?text=Sin+imagen'" />
       <div class="info">
-        <h3 title="${producto.titulo}">${producto.titulo}</h3>
+        <h3 title="${escapeHtml(producto.titulo || '')}">${escapeHtml(producto.titulo || '')}</h3>
         <div class="meta">
           <span>${producto.tiempo_impresion_horas || 0}h ${producto.tiempo_impresion_minutos || 0}m</span>
           <span>${producto.peso_gramos || 0}g</span>
           <span>${producto.likes || 0} likes</span>
         </div>
         <div class="tags">
-          <span class="tag categoria-tag">${producto.categoria || 'General'}</span>
-          ${tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          <span class="tag categoria-tag">${escapeHtml(producto.categoria || 'General')}</span>
+          ${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         </div>
       </div>
     </div>
@@ -164,7 +168,7 @@ async function verDetalle(id) {
 
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = `
-      <h2>${p.titulo}</h2>
+      <h2>${escapeHtml(p.titulo || '')}</h2>
 
       <div class="modal-galeria">
         <img src="${p.imagen_principal || 'https://via.placeholder.com/400x300?text=Sin+imagen'}"
@@ -189,15 +193,15 @@ async function verDetalle(id) {
         </div>
         <div class="detalle-item">
           <label>Categoria</label>
-          <span>${p.categoria || 'General'}</span>
+          <span>${escapeHtml(p.categoria || 'General')}</span>
         </div>
         <div class="detalle-item">
           <label>Materiales</label>
-          <span>${materiales.join(', ') || 'No especificado'}</span>
+          <span>${escapeHtml(materiales.join(', ') || 'No especificado')}</span>
         </div>
         <div class="detalle-item">
           <label>Impresoras</label>
-          <span>${impresoras.slice(0, 3).join(', ')}${impresoras.length > 3 ? '...' : ''}</span>
+          <span>${escapeHtml(impresoras.slice(0, 3).join(', ') + (impresoras.length > 3 ? '...' : ''))}</span>
         </div>
         <div class="detalle-item">
           <label>Descargas</label>
@@ -223,7 +227,7 @@ async function verDetalle(id) {
 
       ${tags.length > 0 ? `
         <div style="margin-top:15px">
-          <strong>Tags:</strong> ${tags.map(t => `<span class="tag">${t}</span>`).join(' ')}
+          <strong>Tags:</strong> ${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join(' ')}
         </div>
       ` : ''}
 

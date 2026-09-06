@@ -14,6 +14,9 @@ function fetchJson(url) {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          return reject(new Error(`HTTP ${res.statusCode}: ${data.substring(0, 200)}`));
+        }
         try {
           resolve(JSON.parse(data));
         } catch (e) {

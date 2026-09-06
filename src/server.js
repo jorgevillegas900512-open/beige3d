@@ -208,17 +208,13 @@ app.put('/api/admin/productos/:id/precio', authMiddleware, (req, res) => {
 });
 
 app.post('/api/admin/productos/importar', authMiddleware, async (req, res) => {
-  const { urls, query, limite = 50 } = req.body;
+  const { urls } = req.body;
+  if (!urls || !Array.isArray(urls) || urls.length === 0) {
+    return res.status(400).json({ error: 'Se requiere al menos una URL de MakerWorld' });
+  }
   try {
-    const { importarPorUrls, importarPorModeloIds } = require('./scraper');
-    let importados;
-    if (urls && urls.length > 0) {
-      importados = await importarPorUrls(urls);
-    } else if (query) {
-      importados = await importarPorUrls([]);
-    } else {
-      return res.status(400).json({ error: 'Se requiere urls o query' });
-    }
+    const { importarPorUrls } = require('./scraper');
+    const importados = await importarPorUrls(urls);
     res.json({ success: true, importados });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -247,18 +243,25 @@ app.get('/api/admin/pedidos', authMiddleware, (req, res) => {
 
 app.post('/api/admin/pedidos', authMiddleware, (req, res) => {
   const { cliente_nombre, cliente_telefono, cliente_email, producto_id, cantidad, color_filamento, notas, precio_cotizado } = req.body;
+  if (!cliente_nombre || !String(cliente_nombre).trim()) return res.status(400).json({ error: 'El nombre del cliente es requerido' });
+  const cant = parseInt(cantidad) || 1;
+  if (cant < 1) return res.status(400).json({ error: 'Cantidad invalida' });
   const db = readDb();
+  if (producto_id) {
+    const pid = parseInt(producto_id);
+    if (!db.productos.find(p => p.id === pid)) return res.status(400).json({ error: 'Producto no encontrado' });
+  }
 
   const pedido = {
     id: db.next_pedido_id++,
-    cliente_nombre,
-    cliente_telefono,
-    cliente_email,
-    producto_id,
-    cantidad: cantidad || 1,
-    color_filamento,
-    notas,
-    precio_cotizado: precio_cotizado || 0,
+    cliente_nombre: String(cliente_nombre).trim(),
+    cliente_telefono: cliente_telefono || '',
+    cliente_email: cliente_email || '',
+    producto_id: producto_id ? parseInt(producto_id) : null,
+    cantidad: cant,
+    color_filamento: color_filamento || '',
+    notas: notas || '',
+    precio_cotizado: parseFloat(precio_cotizado) || 0,
     estado: 'pendiente',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -284,17 +287,25 @@ app.put('/api/admin/pedidos/:id/estado', authMiddleware, (req, res) => {
 
 app.post('/api/pedidos', (req, res) => {
   const { cliente_nombre, cliente_telefono, cliente_email, producto_id, cantidad, color_filamento, notas } = req.body;
+  if (!cliente_nombre || !String(cliente_nombre).trim()) return res.status(400).json({ error: 'El nombre es requerido' });
+  if (!cliente_telefono || !String(cliente_telefono).trim()) return res.status(400).json({ error: 'El telefono es requerido' });
+  const cant = parseInt(cantidad) || 1;
+  if (cant < 1) return res.status(400).json({ error: 'Cantidad invalida' });
   const db = readDb();
+  if (producto_id) {
+    const pid = parseInt(producto_id);
+    if (!db.productos.find(p => p.id === pid)) return res.status(400).json({ error: 'Producto no encontrado' });
+  }
 
   const pedido = {
     id: db.next_pedido_id++,
-    cliente_nombre,
-    cliente_telefono,
-    cliente_email,
-    producto_id,
-    cantidad: cantidad || 1,
-    color_filamento,
-    notas,
+    cliente_nombre: String(cliente_nombre).trim(),
+    cliente_telefono: String(cliente_telefono).trim(),
+    cliente_email: cliente_email || '',
+    producto_id: producto_id ? parseInt(producto_id) : null,
+    cantidad: cant,
+    color_filamento: color_filamento || '',
+    notas: notas || '',
     precio_cotizado: 0,
     estado: 'pendiente',
     created_at: new Date().toISOString(),
@@ -357,8 +368,8 @@ app.get('/catalogo.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'catalogo.html'));
 });
 
-// === SPA FALLBACK ===
-app.get('*', (req, res) => {
+// === SPA FALLBACK === (compatible Express 4 & 5)
+app.use((req, res) => {
   if (req.path.startsWith('/admin')) {
     res.sendFile(path.join(__dirname, '..', 'public', 'admin', 'index.html'));
   } else {

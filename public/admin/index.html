@@ -144,6 +144,17 @@
         <section id="section-proveedores" class="admin-section">
           <h3>Agenda de Proveedores</h3>
           <button class="btn-primary" onclick="toggleForm('proveedor')" style="margin-bottom:15px;">+ Nuevo Proveedor</button>
+          <div id="form-proveedor" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="pr-empresa" placeholder="Empresa *" />
+              <input type="text" id="pr-contacto" placeholder="Persona de contacto" />
+              <input type="text" id="pr-telefono" placeholder="Telefono" />
+              <input type="email" id="pr-email" placeholder="Email" />
+              <input type="text" id="pr-direccion" placeholder="Direccion" />
+            </div>
+            <textarea id="pr-notas" placeholder="Notas" rows="2"></textarea>
+            <button onclick="guardarProveedor()" class="btn-primary">Guardar Proveedor</button>
+          </div>
           <div class="pedidos-filtros">
             <input type="text" id="buscar-proveedor" placeholder="Buscar empresa, contacto o email..." oninput="cargarProveedores()" />
           </div>
@@ -153,6 +164,16 @@
         <section id="section-clientes" class="admin-section">
           <h3>Agenda de Clientes</h3>
           <button class="btn-primary" onclick="toggleForm('cliente')" style="margin-bottom:15px;">+ Nuevo Cliente</button>
+          <div id="form-cliente" class="crud-form" style="display:none">
+            <div class="form-grid">
+              <input type="text" id="c-nombre" placeholder="Nombre *" />
+              <input type="text" id="c-telefono" placeholder="Telefono" />
+              <input type="email" id="c-email" placeholder="Email" />
+              <input type="text" id="c-direccion" placeholder="Direccion" />
+            </div>
+            <textarea id="c-notas" placeholder="Notas" rows="2"></textarea>
+            <button onclick="guardarCliente()" class="btn-primary">Guardar Cliente</button>
+          </div>
           <div class="pedidos-filtros">
             <input type="text" id="buscar-cliente" placeholder="Buscar nombre, email o telefono..." oninput="cargarClientes()" />
           </div>
